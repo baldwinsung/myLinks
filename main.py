@@ -1,11 +1,29 @@
 #!/usr/bin/env python3
 
 import csv
+import argparse
+
+parser = argparse.ArgumentParser(description="myLinks")
+parser.add_argument('--csv', '-c', required=True, help='csv file. reference formatting in example.csv')
+parser.add_argument('--out', '-o', required=True, help='html file to create')
+args = parser.parse_args()
+
+if args.csv:
+    print("csv file:", args.csv)
+else:
+    print("No csv file provided.")
+
+if args.out:
+    print("html file:", args.out)
+else:
+    print("No html file provided.")
+
 
 # Read the CSV file
-with open("data.csv", newline='', encoding="utf-8") as csvfile:
+with open(args.csv, newline='', encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile)
     rows = list(reader)
+    sorted_data = sorted(rows, key=lambda row: (float(row[2]), row[1]))
 
 # Generate HTML
 html = """
@@ -95,7 +113,7 @@ a:active {
     <style>
         table {
             border-collapse: collapse;
-            width: 50%;
+            width: 80%;
             margin: 20px auto;
             font-family: Arial, sans-serif;
         }
@@ -119,15 +137,15 @@ a:active {
 
 # Add header row
 html += "        <tr>\n"
-for header in rows[0]:
-    html += f"            <th>{header}</th>\n"
+html += f"            <th><b>Link</b></th>\n"
+html += f"            <th><b>Description</b></th>\n"
 html += "        </tr>\n"
 
 # Add data rows
-for row in rows[1:]:
+for sorted_data in sorted_data[0:]:
     html += "        <tr>\n"
-    html += f"            <td><a href=\"https://{row[0]}\" target=\"_blank\">{row[1]}</a></td>\n"
-    html += f"            <td>{row[1]}</td>\n"
+    html += f"            <td><a href=\"https://{sorted_data[0]}\" target=\"_blank\">{sorted_data[0]}</a></td>\n"
+    html += f"            <td>{sorted_data[1]}</td>\n"
     html += "        </tr>\n"
 
 # Close HTML
@@ -138,8 +156,8 @@ html += """
 """
 
 # Write to HTML file
-with open("output.html", "w", encoding="utf-8") as f:
+with open(args.out, "w", encoding="utf-8") as f:
     f.write(html)
 
-print("✅ HTML file created successfully: output.html")
+print("✅ HTML file created successfully:", args.out )
 
