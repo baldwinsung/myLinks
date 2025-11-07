@@ -1,9 +1,26 @@
 #!/usr/bin/env python3
 
 import csv
+import argparse
+
+parser = argparse.ArgumentParser(description="myLinks")
+parser.add_argument('--csv', '-c', required=True, help='csv file. reference formatting in example.csv')
+parser.add_argument('--out', '-o', required=True, help='html file to create')
+args = parser.parse_args()
+
+if args.csv:
+    print("csv file:", args.csv)
+else:
+    print("No csv file provided.")
+
+if args.out:
+    print("html file:", args.out)
+else:
+    print("No html file provided.")
+
 
 # Read the CSV file
-with open("data.csv", newline='', encoding="utf-8") as csvfile:
+with open(args.csv, newline='', encoding="utf-8") as csvfile:
     reader = csv.reader(csvfile)
     rows = list(reader)
 
@@ -95,7 +112,7 @@ a:active {
     <style>
         table {
             border-collapse: collapse;
-            width: 50%;
+            width: 80%;
             margin: 20px auto;
             font-family: Arial, sans-serif;
         }
@@ -138,8 +155,8 @@ html += """
 """
 
 # Write to HTML file
-with open("output.html", "w", encoding="utf-8") as f:
+with open(args.out, "w", encoding="utf-8") as f:
     f.write(html)
 
-print("✅ HTML file created successfully: output.html")
+print("✅ HTML file created successfully:", args.out )
 
